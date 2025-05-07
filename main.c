@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <ctype.h>
 
@@ -101,7 +100,30 @@ int main() {
 
     listing[0] = {"JoshProperty", {"1st street", "Linao", 6046}  };
 
-    
+    do{
+menu()
+    printf("Input choice");
+    scanf("%d", &choice);
+
+switch (choice){
+    case 1: 
+        addlisting();
+        break;
+    case 2:
+        showmenu();
+        break;
+    case 3:
+        findProperty();
+        break;
+    case 4:
+        findprice();
+        break;
+    case 5:
+        printf("Exiting Menu");
+        break;
+    default:
+        printf("Invalid choice");
+}
 
 
 
