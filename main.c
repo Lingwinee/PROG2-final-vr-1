@@ -129,10 +129,6 @@ const float desc_prices[DESC_MAX_TYPES] = {
     120    // ENTIRE_COTTAGE
 };
 
-const float service_fees[MAX_AMENITIES] = {
-
-};
-
 // Global variable to track number of listings
 int numListings = 0;
 
@@ -150,7 +146,6 @@ void showMenu(BNB listing);
 
 //automatically calculates price of all entries, everytime new entry is addded, including 5 default initialized
 float calculatePrice(BNB lis[]);
-float calculateServiceFee(BNB lis[]);
 
 void initializeDefaultListings(BNB lis[]);
 
@@ -161,7 +156,6 @@ int main() {
     // Initialize with 5 default listings
     initializeDefaultListings(listing);
     numListings = 5;
-
 
     do {
         displayMenu();
@@ -231,6 +225,10 @@ void addListing(BNB lis[]) {
     printf("Enter Zip Code: ");
     scanf("%d", &lis[index].address.zipCode);
     fflush(stdin);
+
+    printf("Enter Service Fee: ");
+    scanf("%d", &lis[index].serviceFee);
+    fflush(stdin);
     
     // Get property descriptions
     getDescription(lis, index);
@@ -246,7 +244,9 @@ void addListing(BNB lis[]) {
     fgets(lis[index].contactNumber, MAX_CONTACT_NO, stdin);
     lis[index].contactNumber[strcspn(lis[index].contactNumber, "\n")] = 0;
 
-
+    printf("Enter Property Owner: ");
+    fgets(lis[index].propertyOwner, MAX_PROPERTY_NAME, stdin);
+    lis[index].propertyOwner[strcspn(lis[index].propertyOwner, "\n")] = 0;
     
     numListings++;
     printf("Listing added successfully!\n");
@@ -294,11 +294,42 @@ void getDescription(BNB lis[], int index) {
 
 void getAmenities(BNB lis[], int index) {
     char response;
-    
+        
     printf("Does the property have hot shower (Y/N)? ");
     scanf(" %c", &response);
     lis[index].amenities.isHotShower = (toupper(response) == 'Y') ? TRUE : FALSE;
-
+	
+	printf("Does the property have AC? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isAC = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Does the property have Free Parking? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isFreeParking = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Does the property have Guest Supplies?  (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isGuestSuppliesAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Does the property have Free Wifi? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isFreeWifi = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Is the property Animal friendly? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isAnimalFriendly = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Is the service Free? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isServiceFree = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Is Kitchen ware available? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isKitchenWareAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
+    
+    printf("Is washing machine available? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isWashingMachineAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
     
     fflush(stdin);
 }
@@ -402,10 +433,24 @@ void findIndex(BNB lis[]){
 }
 
 void findPrice(BNB lis[]) {
+	int count = 0, found;
     float minPrice, maxPrice;
     printf("Enter price Range to find:");
     printf("\nMinimum Price: ");
+    scanf("%f", &minPrice);
     printf("Maximum Price: ");
+    scanf("%f", &maxPrice);
+    
+    printf("\nProperties within price range %.2f - %.2f:\n", minPrice, maxPrice);
+    for (int i = 0; i < count; i++) {
+        if (lis[i].price >= minPrice && lis[i].price <= maxPrice) {
+            displayBnB(lis, i);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No properties found in that price range.\n");
+    }
 }
 
 void initializeDefaultListings(BNB lis[]) {
@@ -433,7 +478,7 @@ void initializeDefaultListings(BNB lis[]) {
         .checkInTime = {14, 0},
         .contactNumber = "+63 933 123 4567",
         .propertyOwner = "Maria Santos",
-        .price = 350.00,
+        .price = 0,
         .serviceFee = 50.00
     };
     
@@ -461,7 +506,7 @@ void initializeDefaultListings(BNB lis[]) {
         .checkInTime = {15, 30},
         .contactNumber = "+63 917 555 8888",
         .propertyOwner = "Juan Dela Cruz",
-        .price = 120.00,
+        .price = 0,
         .serviceFee = 20.00
     };
     
@@ -489,7 +534,7 @@ void initializeDefaultListings(BNB lis[]) {
         .checkInTime = {13, 0},
         .contactNumber = "+63 915 987 6543",
         .propertyOwner = "Elena Reyes",
-        .price = 180.00,
+        .price = 0,
         .serviceFee = 25.00
     };
     
@@ -517,7 +562,7 @@ void initializeDefaultListings(BNB lis[]) {
         .checkInTime = {14, 0},
         .contactNumber = "+63 922 111 2222",
         .propertyOwner = "Paolo Mendoza",
-        .price = 25.00,
+        .price = 0,
         .serviceFee = 5.00
     };
     
@@ -545,7 +590,7 @@ void initializeDefaultListings(BNB lis[]) {
         .checkInTime = {12, 0},
         .contactNumber = "+63 945 777 9999",
         .propertyOwner = "Rodrigo Torres",
-        .price = 250.00,
+        .price = 0,
         .serviceFee = 40.00
     };
 }
@@ -553,6 +598,4 @@ void initializeDefaultListings(BNB lis[]) {
 float calculatePrice(BNB lis[]){
 
 }
-float calculateServiceFee(BNB lis[]){
 
-}
