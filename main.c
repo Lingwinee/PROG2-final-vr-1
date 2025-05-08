@@ -472,144 +472,145 @@ void findPrice(BNB lis[]) {
 void initializeDefaultListings(BNB lis[]) {
     // Listing 1: Beachfront Villa
     lis[0] = (BNB){
-        .propertyName = "Beachfront Villa Paradise",
-        .address = {
-            .city = "Cebu City",
-            .street = "Oceanview Drive",
-            .barangay = "Mactan",
-            .zipCode = 6015
+        "Beachfront Villa Paradise",
+        {
+            "Cebu City",
+            "Oceanview Drive",
+            "Mactan",
+            6015
         },
-        .propertyDescriptions = {KING_BED, QUEEN_BED, WITH_KITCHEN, WITH_POOL, WITH_OCEAN_VIEW, ENTIRE_VILLA, DESC_NONE},
-        .amenities = {
-            .isHotShower = TRUE,
-            .isAC = TRUE,
-            .isFreeParking = TRUE,
-            .isGuestSuppliesAvail = TRUE,
-            .isFreeWifi = TRUE,
-            .isAnimalFriendly = FALSE,
-            .isServiceFree = FALSE,
-            .isKitchenWareAvail = TRUE,
-            .isWashingMachineAvail = TRUE
+        {KING_BED, QUEEN_BED, WITH_KITCHEN, WITH_POOL, WITH_OCEAN_VIEW, ENTIRE_VILLA, DESC_NONE},
+        {
+            TRUE,
+            TRUE,
+            TRUE,
+            TRUE,
+            TRUE,
+            FALSE,
+            FALSE,
+            TRUE,
+            TRUE
         },
-        .checkInTime = {14, 0},
-        .contactNumber = "+63 933 123 4567",
-        .propertyOwner = "Maria Santos",
-        .price = 0,
-        .serviceFee = 50.00
+        {14, 0},
+        "+63 933 123 4567",
+        "Maria Santos",
+        0,
+        50.00
     };
-    
+
     // Listing 2: City Apartment
     lis[1] = (BNB){
-        .propertyName = "Modern Downtown Apartment",
-        .address = {
-            .city = "Manila",
-            .street = "Bonifacio Avenue",
-            .barangay = "Poblacion",
-            .zipCode = 1200
+        "Modern Downtown Apartment",
+        {
+            "Manila",
+            "Bonifacio Avenue",
+            "Poblacion",
+            1200
         },
-        .propertyDescriptions = {QUEEN_BED, WITH_KITCHEN, WITH_BALCONY, WITH_WORKSPACE, ENTIRE_APARTMENT, DESC_NONE},
-        .amenities = {
-            .isHotShower = TRUE,
-            .isAC = TRUE,
-            .isFreeParking = FALSE,
-            .isGuestSuppliesAvail = TRUE,
-            .isFreeWifi = TRUE,
-            .isAnimalFriendly = FALSE,
-            .isServiceFree = FALSE,
-            .isKitchenWareAvail = TRUE,
-            .isWashingMachineAvail = TRUE
+        {QUEEN_BED, WITH_KITCHEN, WITH_BALCONY, WITH_WORKSPACE, ENTIRE_APARTMENT, DESC_NONE},
+        {
+            TRUE,
+            TRUE,
+            FALSE,
+            TRUE,
+            TRUE,
+            FALSE,
+            FALSE,
+            TRUE,
+            TRUE
         },
-        .checkInTime = {15, 30},
-        .contactNumber = "+63 917 555 8888",
-        .propertyOwner = "Juan Dela Cruz",
-        .price = 0,
-        .serviceFee = 20.00
+        {15, 30},
+        "+63 917 555 8888",
+        "Juan Dela Cruz",
+        0,
+        20.00
     };
-    
+
     // Listing 3: Mountain Retreat
     lis[2] = (BNB){
-        .propertyName = "Serene Mountain Cottage",
-        .address = {
-            .city = "Baguio",
-            .street = "Pine Tree Road",
-            .barangay = "Camp John Hay",
-            .zipCode = 2600
+        "Serene Mountain Cottage",
+        {
+            "Baguio",
+            "Pine Tree Road",
+            "Camp John Hay",
+            2600
         },
-        .propertyDescriptions = {DOUBLE_BED, SINGLE_BED, WITH_KITCHEN, WITH_MOUNTAIN_VIEW, WITH_FIREPLACE, ENTIRE_COTTAGE, DESC_NONE},
-        .amenities = {
-            .isHotShower = TRUE,
-            .isAC = FALSE,
-            .isFreeParking = TRUE,
-            .isGuestSuppliesAvail = TRUE,
-            .isFreeWifi = TRUE,
-            .isAnimalFriendly = TRUE,
-            .isServiceFree = FALSE,
-            .isKitchenWareAvail = TRUE,
-            .isWashingMachineAvail = FALSE
+        {DOUBLE_BED, SINGLE_BED, WITH_KITCHEN, WITH_MOUNTAIN_VIEW, WITH_FIREPLACE, ENTIRE_COTTAGE, DESC_NONE},
+        {
+            TRUE,
+            FALSE,
+            TRUE,
+            TRUE,
+            TRUE,
+            TRUE,
+            FALSE,
+            TRUE,
+            FALSE
         },
-        .checkInTime = {13, 0},
-        .contactNumber = "+63 915 987 6543",
-        .propertyOwner = "Elena Reyes",
-        .price = 0,
-        .serviceFee = 25.00
+        {13, 0},
+        "+63 915 987 6543",
+        "Elena Reyes",
+        0,
+        25.00
     };
-    
+
     // Listing 4: Budget Room
     lis[3] = (BNB){
-        .propertyName = "Cozy Budget Room",
-        .address = {
-            .city = "Quezon City",
-            .street = "University Avenue",
-            .barangay = "Diliman",
-            .zipCode = 1101
+        "Cozy Budget Room",
+        {
+            "Quezon City",
+            "University Avenue",
+            "Diliman",
+            1101
         },
-        .propertyDescriptions = {SINGLE_BED, SINGLE_ROOM, WITH_PRIVATE_BATHROOM, DESC_NONE},
-        .amenities = {
-            .isHotShower = TRUE,
-            .isAC = TRUE,
-            .isFreeParking = FALSE,
-            .isGuestSuppliesAvail = TRUE,
-            .isFreeWifi = TRUE,
-            .isAnimalFriendly = FALSE,
-            .isServiceFree = TRUE,
-            .isKitchenWareAvail = FALSE,
-            .isWashingMachineAvail = FALSE
+        {SINGLE_BED, SINGLE_ROOM, WITH_PRIVATE_BATHROOM, DESC_NONE},
+        {
+            TRUE,
+            TRUE,
+            FALSE,
+            TRUE,
+            TRUE,
+            FALSE,
+            TRUE,
+            FALSE,
+            FALSE
         },
-        .checkInTime = {14, 0},
-        .contactNumber = "+63 922 111 2222",
-        .propertyOwner = "Paolo Mendoza",
-        .price = 0,
-        .serviceFee = 5.00
+        {14, 0},
+        "+63 922 111 2222",
+        "Paolo Mendoza",
+        0,
+        5.00
     };
-    
+
     // Listing 5: Luxury House
     lis[4] = (BNB){
-        .propertyName = "Luxury Family House",
-        .address = {
-            .city = "Davao",
-            .street = "Palm Avenue",
-            .barangay = "Lanang",
-            .zipCode = 8000
+        "Luxury Family House",
+        {
+            "Davao",
+            "Palm Avenue",
+            "Lanang",
+            8000
         },
-        .propertyDescriptions = {KING_BED, DOUBLE_BED, WITH_GARDEN, WITH_POOL, WITH_KITCHEN, ENTIRE_HOUSE, DESC_NONE},
-        .amenities = {
-            .isHotShower = TRUE,
-            .isAC = TRUE,
-            .isFreeParking = TRUE,
-            .isGuestSuppliesAvail = TRUE,
-            .isFreeWifi = TRUE,
-            .isAnimalFriendly = TRUE,
-            .isServiceFree = FALSE,
-            .isKitchenWareAvail = TRUE,
-            .isWashingMachineAvail = TRUE
+        {KING_BED, DOUBLE_BED, WITH_GARDEN, WITH_POOL, WITH_KITCHEN, ENTIRE_HOUSE, DESC_NONE},
+        {
+            TRUE,
+            TRUE,
+            TRUE,
+            TRUE,
+            TRUE,
+            TRUE,
+            FALSE,
+            TRUE,
+            TRUE
         },
-        .checkInTime = {12, 0},
-        .contactNumber = "+63 945 777 9999",
-        .propertyOwner = "Rodrigo Torres",
-        .price = 0,
-        .serviceFee = 40.00
+        {12, 0},
+        "+63 945 777 9999",
+        "Rodrigo Torres",
+        0,
+        40.00
     };
 }
+
 
 // Fixed: Implemented the calculatePrice function
 float calculatePrice(BNB *listing) {
