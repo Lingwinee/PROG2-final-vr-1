@@ -9,35 +9,16 @@
 #define MAX_CONTACT_NO 20
 #define MAX_ADDRESS 50
 #define MAX_LISTINGS 255
-
+#define MAX_DESC 25
 #define MAX_AMENITIES 10
 
 typedef enum {
-    DESC_NONE = 0,
-    SINGLE_BED,
-    DOUBLE_BED,
-    KING_BED,
-    QUEEN_BED,
-    SINGLE_ROOM,
-    DOUBLE_ROOM,
-    TRIPLE_ROOM,
-    QUADRUPLE_ROOM,
-    WITH_KITCHEN,
-    WITH_BALCONY,
-    WITH_OCEAN_VIEW,
-    WITH_MOUNTAIN_VIEW,
-    WITH_GARDEN,
-    WITH_POOL,
-    WITH_HOT_TUB,
-    WITH_PRIVATE_BATHROOM,
-    WITH_WORKSPACE,
-    WITH_FIREPLACE,
-    ENTIRE_APARTMENT,
-    ENTIRE_HOUSE,
-    ENTIRE_VILLA,
-    ENTIRE_COTTAGE,
-    
-    DESC_MAX_TYPES
+    DESC_NONE = 0, SINGLE_BED, DOUBLE_BED, KING_BED, QUEEN_BED,
+    SINGLE_ROOM, DOUBLE_ROOM, TRIPLE_ROOM, QUADRUPLE_ROOM,
+    WITH_KITCHEN, WITH_BALCONY, WITH_OCEAN_VIEW, WITH_MOUNTAIN_VIEW,
+    WITH_GARDEN, WITH_POOL, WITH_HOT_TUB, WITH_PRIVATE_BATHROOM,
+    WITH_WORKSPACE, WITH_FIREPLACE, ENTIRE_APARTMENT, ENTIRE_HOUSE,
+    ENTIRE_VILLA, ENTIRE_COTTAGE, DESC_MAX_TYPES
 } DescriptionType;
 
 // Define struct for AirBnB
@@ -54,14 +35,8 @@ typedef struct {
     DescriptionType propertyDescriptions[10];
 
     struct {
-        int isHotShower;
-        int isAC;
-        int isFreeParking;
-        int isGuestSuppliesAvail;
-        int isFreeWifi;
-        int isAnimalFriendly;
-        int isServiceFree;
-        int isKitchenWareAvail;
+        int isHotShower, isAC, isFreeParking, isGuestSuppliesAvail;
+        int isFreeWifi, isAnimalFriendly, isServiceFree, isKitchenWareAvail;
         int isWashingMachineAvail;
     } amenities;
     
@@ -78,61 +53,22 @@ typedef struct {
 
 //price is calculated according to the quality of property, eg. description and amenities
 const char* descriptions[DESC_MAX_TYPES] = {
-    "",
-    "Single Bed",
-    "Double Bed",
-    "King Bed",
-    "Queen Bed",
-    "Single Room",
-    "Double Room", 
-    "Triple Room",
-    "Quadruple Room",
-    "With Kitchen",
-    "With Balcony",
-    "With Ocean View",
-    "With Mountain View",
-    "With Garden",
-    "With Pool",
-    "With Hot Tub",
-    "With Private Bathroom",
-    "With Workspace",
-    "With FirePlace",
-    "Entire Apartment",
-    "Entire House",
-    "Entire Villa",
-    "Entire Cottage"
+    "", "Single Bed", "Double Bed", "King Bed", "Queen Bed", "Single Room",
+    "Double Room", "Triple Room", "Quadruple Room", "With Kitchen",
+    "With Balcony", "With Ocean View", "With Mountain View", "With Garden",
+    "With Pool", "With Hot Tub", "With Private Bathroom", "With Workspace",
+    "With FirePlace", "Entire Apartment", "Entire House", "Entire Villa", "Entire Cottage"
 };
 
 const float desc_prices[DESC_MAX_TYPES] = {
-    0,     // DESC_NONE
-    20,    // SINGLE_BED
-    50,    // DOUBLE_BED
-    80,    // KING_BED
-    65,    // QUEEN_BED
-    20,    // SINGLE_ROOM
-    35,    // DOUBLE_ROOM
-    50,    // TRIPLE_ROOM
-    65,    // QUADRUPLE_ROOM
-    20,    // WITH_KITCHEN
-    15,    // WITH_BALCONY
-    35,    // WITH_OCEAN_VIEW
-    25,    // WITH_MOUNTAIN_VIEW
-    20,    // WITH_GARDEN
-    45,    // WITH_POOL
-    30,    // WITH_HOT_TUB
-    25,    // WITH_PRIVATE_BATHROOM
-    15,    // WITH_WORKSPACE
-    20,    // WITH_FIREPLACE
-    100,   // ENTIRE_APARTMENT
-    150,   // ENTIRE_HOUSE
-    200,   // ENTIRE_VILLA
-    120    // ENTIRE_COTTAGE
+    0, 20, 50, 80, 65, 20, 35, 50, 65, 20, 15, 35, 25, 20, 45, 30, 25, 15, 20, 100, 150, 200, 120
 };
+
 
 // Global variable to track number of listings
 int numListings = 0;
 
-// ------------------------------------------------------ func prototypes
+// Function prototypes
 void displayMenu();
 void addListing(BNB lis[]);
 void getDescription(BNB lis[], int index);
@@ -142,23 +78,16 @@ void displayAll(BNB lis[]);
 void findProperty(BNB lis[]);
 void findIndex(BNB lis[]);
 void findPrice(BNB lis[]);
-void showMenu(BNB listing);
-
-//automatically calculates price of all entries, everytime new entry is addded, including 5 default initialized
 float calculatePrice(BNB *listing);
 void updateAllPrices(BNB lis[]);
-
 void initializeDefaultListings(BNB lis[]);
 
 int main() {
     BNB listing[MAX_LISTINGS];
     int choice;
     
-    // Initialize with 5 default listings
     initializeDefaultListings(listing);
     numListings = 5;
-    
-    // Calculate prices for default listings
     updateAllPrices(listing);
 
     do {
@@ -168,29 +97,15 @@ int main() {
         fflush(stdin);
 
         switch (choice) {
-            case 1: 
-                addListing(listing);
-                updateAllPrices(listing);
-                break;
-            case 2:
-                displayAll(listing);
-                break;
-            case 3:
-                findProperty(listing);
-                break;
-            case 4:
-                findIndex(listing);
-                break;
-            case 5:
-                findPrice(listing);
-                break;
-            case 6:
-                printf("Exiting Menu\n");
-                break;
-            default:
-                printf("Invalid choice\n");
+            case 1: addListing(listing); updateAllPrices(listing); break;
+            case 2: displayAll(listing); break;
+            case 3: findProperty(listing); break;
+            case 4: findIndex(listing); break;
+            case 5: findPrice(listing); break;
+            case 6: printf("Exiting Menu\n"); break;
+            default: printf("Invalid choice\n");
         }
-    } while (choice != 6); // Fixed: Changed from 5 to 6 to match the menu
+    } while (choice != 6);
 
     return 0;
 }
@@ -204,7 +119,6 @@ void displayMenu() {
     printf(" 5. Search Price\n");
     printf(" 6. Exit\n");
 }
-
 
 void addListing(BNB lis[]) {
     int index = numListings;
@@ -232,7 +146,7 @@ void addListing(BNB lis[]) {
     fflush(stdin);
 
     printf("Enter Service Fee: ");
-    scanf("%f", &lis[index].serviceFee); // Fixed: Changed %d to %f for float
+    scanf("%f", &lis[index].serviceFee);
     fflush(stdin);
     
     // Get property descriptions
@@ -260,11 +174,10 @@ void addListing(BNB lis[]) {
     printf("Listing added successfully!\n");
 }
 
-void getDescription(BNB lis[], int index) {
-    int i = 0;
+void getDescription(BNB lis[], int index) { 
+    int i = 0, choice;
     char enterMore = ' ';
-    int choice;
-    
+
     printf("Available descriptions:\n");
     for (int j = 1; j < DESC_MAX_TYPES; j++) {
         printf("%d. %s (Price: %.2f)\n", j, descriptions[j], desc_prices[j]);
@@ -302,43 +215,23 @@ void getDescription(BNB lis[], int index) {
 
 void getAmenities(BNB lis[], int index) {
     char response;
-        
-    printf("Does the property have hot shower (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isHotShower = (toupper(response) == 'Y') ? TRUE : FALSE;
-	
-	printf("Does the property have AC? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isAC = (toupper(response) == 'Y') ? TRUE : FALSE;
+    const char* amenityNames[] = {
+        "hot shower", "AC", "Free Parking", "Guest Supplies", "Free Wifi",
+        "Animal friendly", "service Free", "Kitchen ware available", "washing machine available"
+    };
+    int* amenityValues[] = {
+        &lis[index].amenities.isHotShower, &lis[index].amenities.isAC,
+        &lis[index].amenities.isFreeParking, &lis[index].amenities.isGuestSuppliesAvail,
+        &lis[index].amenities.isFreeWifi, &lis[index].amenities.isAnimalFriendly,
+        &lis[index].amenities.isServiceFree, &lis[index].amenities.isKitchenWareAvail,
+        &lis[index].amenities.isWashingMachineAvail
+    };
     
-    printf("Does the property have Free Parking? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isFreeParking = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
-    printf("Does the property have Guest Supplies?  (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isGuestSuppliesAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
-    printf("Does the property have Free Wifi? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isFreeWifi = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
-    printf("Is the property Animal friendly? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isAnimalFriendly = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
-    printf("Is the service Free? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isServiceFree = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
-    printf("Is Kitchen ware available? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isKitchenWareAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
-    printf("Is washing machine available? (Y/N)? ");
-    scanf(" %c", &response);
-    lis[index].amenities.isWashingMachineAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
-    
+    for (int i = 0; i < MAX_AMENITIES; i++) {
+        printf("Does the property have %s (Y/N)? ", amenityNames[i]);
+        scanf(" %c", &response);
+        *amenityValues[i] = (toupper(response) == 'Y') ? TRUE : FALSE;
+    }
     fflush(stdin);
 }
 
@@ -400,13 +293,8 @@ void displayAll(BNB lis[]) {
         sprintf(checkInTime, "%02d:%02d", lis[i].checkInTime.hour, lis[i].checkInTime.minute);
         
         printf("%-3d %-30.30s %-30.30s %-2s%-13.2f %-2s%-8.2f %-10s %-10.25s\n", 
-            i+1, 
-            lis[i].propertyName, 
-            location,
-            "P", lis[i].price, 
-            "P", lis[i].serviceFee,
-            checkInTime,
-            lis[i].propertyOwner);
+            i+1, lis[i].propertyName, location, "P", lis[i].price, 
+            "P", lis[i].serviceFee, checkInTime, lis[i].propertyOwner);
     }
     
     printf("\nDisplaying %d listing(s)\n", numListings);
@@ -419,7 +307,7 @@ void findProperty(BNB lis[]) {
     
     printf("Enter property name to search: ");
     fgets(searchName, MAX_PROPERTY_NAME, stdin);
-    searchName[strcspn(searchName, "\n")] = 0; // Remove newline
+    searchName[strcspn(searchName, "\n")] = 0;
     
     for (int i = 0; i < numListings; i++) {
         if (strstr(lis[i].propertyName, searchName) != NULL) {
@@ -432,12 +320,11 @@ void findProperty(BNB lis[]) {
         printf("No properties found matching '%s'.\n", searchName);
     }
 }
-void findIndex(BNB lis[]){
+void findIndex(BNB lis[]) {
     int index;
     printf("Enter the Index of property: ");
     scanf("%d", &index);
     
-    // Validate index
     if (index < 1 || index > numListings) {
         printf("Invalid index. Please enter a number between 1 and %d.\n", numListings);
         return;
@@ -447,25 +334,49 @@ void findIndex(BNB lis[]){
 }
 
 void findPrice(BNB lis[]) {
-    int found = 0; // Fixed: Initialize found variable
+    int found = 0;
     float minPrice, maxPrice;
     
-    printf("Enter price Range to find:\n");
-    printf("Minimum Price: ");
+    printf("Enter price Range to find:\nMinimum Price: ");
     scanf("%f", &minPrice);
     printf("Maximum Price: ");
     scanf("%f", &maxPrice);
     
     printf("\nProperties within price range %.2f - %.2f:\n", minPrice, maxPrice);
-    for (int i = 0; i < numListings; i++) { // Fixed: Using numListings instead of count
+    for (int i = 0; i < numListings; i++) {
         if (lis[i].price >= minPrice && lis[i].price <= maxPrice) {
             displayBnB(lis, i);
             found = 1;
         }
     }
     
-    if (!found) {
-        printf("No properties found in that price range.\n");
+    if (!found) printf("No properties found in that price range.\n");
+}
+
+float calculatePrice(BNB *listing) {
+    float total = 0.0;
+    
+    for (int i = 0; i < MAX_DESC && listing->propertyDescriptions[i] != DESC_NONE; i++) {
+        total += desc_prices[listing->propertyDescriptions[i]];
+    }
+    
+    if (listing->amenities.isHotShower) total += 10.0;
+    if (listing->amenities.isAC) total += 15.0;
+    if (listing->amenities.isFreeParking) total += 10.0;
+    if (listing->amenities.isGuestSuppliesAvail) total += 5.0;
+    if (listing->amenities.isFreeWifi) total += 5.0;
+    if (listing->amenities.isAnimalFriendly) total += 5.0;
+    if (listing->amenities.isKitchenWareAvail) total += 8.0;
+    if (listing->amenities.isWashingMachineAvail) total += 10.0;
+    
+    if (listing->amenities.isServiceFree) total *= 0.95;
+    
+    return total;
+}
+
+void updateAllPrices(BNB lis[]) {
+    for (int i = 0; i < numListings; i++) {
+        lis[i].price = calculatePrice(&lis[i]);
     }
 }
 
@@ -609,39 +520,4 @@ void initializeDefaultListings(BNB lis[]) {
         0,
         40.00
     };
-}
-
-
-// Fixed: Implemented the calculatePrice function
-float calculatePrice(BNB *listing) {
-    float total = 0.0;
-    
-    // Add up all the description prices
-    for (int i = 0; i < 10 && listing->propertyDescriptions[i] != DESC_NONE; i++) {
-        total += desc_prices[listing->propertyDescriptions[i]];
-    }
-    
-    // Add bonuses for amenities
-    if (listing->amenities.isHotShower) total += 10.0;
-    if (listing->amenities.isAC) total += 15.0;
-    if (listing->amenities.isFreeParking) total += 10.0;
-    if (listing->amenities.isGuestSuppliesAvail) total += 5.0;
-    if (listing->amenities.isFreeWifi) total += 5.0;
-    if (listing->amenities.isAnimalFriendly) total += 5.0;
-    if (listing->amenities.isKitchenWareAvail) total += 8.0;
-    if (listing->amenities.isWashingMachineAvail) total += 10.0;
-    
-    // If service is free, we adding a discount
-    if (listing->amenities.isServiceFree) {
-        total *= 0.95; // 5% discount for free service
-    }
-    
-    return total;
-}
-
-// Update prices for all listings
-void updateAllPrices(BNB lis[]) {
-    for (int i = 0; i < numListings; i++) {
-        lis[i].price = calculatePrice(&lis[i]);
-    }
 }
