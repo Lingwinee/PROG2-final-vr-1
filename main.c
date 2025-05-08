@@ -630,7 +630,7 @@ float calculatePrice(BNB *listing) {
     if (listing->amenities.isKitchenWareAvail) total += 8.0;
     if (listing->amenities.isWashingMachineAvail) total += 10.0;
     
-    // If service is free, consider adding a discount
+    // If service is free, we adding a discount
     if (listing->amenities.isServiceFree) {
         total *= 0.95; // 5% discount for free service
     }
