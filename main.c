@@ -145,7 +145,8 @@ void findPrice(BNB lis[]);
 void showMenu(BNB listing);
 
 //automatically calculates price of all entries, everytime new entry is addded, including 5 default initialized
-float calculatePrice(BNB lis[]);
+float calculatePrice(BNB *listing);
+void updateAllPrices(BNB lis[]);
 
 void initializeDefaultListings(BNB lis[]);
 
@@ -156,6 +157,9 @@ int main() {
     // Initialize with 5 default listings
     initializeDefaultListings(listing);
     numListings = 5;
+    
+    // Calculate prices for default listings
+    updateAllPrices(listing);
 
     do {
         displayMenu();
@@ -166,6 +170,7 @@ int main() {
         switch (choice) {
             case 1: 
                 addListing(listing);
+                updateAllPrices(listing);
                 break;
             case 2:
                 displayAll(listing);
@@ -185,7 +190,7 @@ int main() {
             default:
                 printf("Invalid choice\n");
         }
-    } while (choice != 5);
+    } while (choice != 6); // Fixed: Changed from 5 to 6 to match the menu
 
     return 0;
 }
@@ -227,7 +232,7 @@ void addListing(BNB lis[]) {
     fflush(stdin);
 
     printf("Enter Service Fee: ");
-    scanf("%d", &lis[index].serviceFee);
+    scanf("%f", &lis[index].serviceFee); // Fixed: Changed %d to %f for float
     fflush(stdin);
     
     // Get property descriptions
@@ -247,6 +252,9 @@ void addListing(BNB lis[]) {
     printf("Enter Property Owner: ");
     fgets(lis[index].propertyOwner, MAX_PROPERTY_NAME, stdin);
     lis[index].propertyOwner[strcspn(lis[index].propertyOwner, "\n")] = 0;
+    
+    // Calculate the price for the new listing
+    lis[index].price = calculatePrice(&lis[index]);
     
     numListings++;
     printf("Listing added successfully!\n");
@@ -429,25 +437,33 @@ void findIndex(BNB lis[]){
     printf("Enter the Index of property: ");
     scanf("%d", &index);
     
+    // Validate index
+    if (index < 1 || index > numListings) {
+        printf("Invalid index. Please enter a number between 1 and %d.\n", numListings);
+        return;
+    }
+    
     displayBnB(lis, index - 1);
 }
 
 void findPrice(BNB lis[]) {
-	int count = 0, found;
+    int found = 0; // Fixed: Initialize found variable
     float minPrice, maxPrice;
-    printf("Enter price Range to find:");
-    printf("\nMinimum Price: ");
+    
+    printf("Enter price Range to find:\n");
+    printf("Minimum Price: ");
     scanf("%f", &minPrice);
     printf("Maximum Price: ");
     scanf("%f", &maxPrice);
     
     printf("\nProperties within price range %.2f - %.2f:\n", minPrice, maxPrice);
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < numListings; i++) { // Fixed: Using numListings instead of count
         if (lis[i].price >= minPrice && lis[i].price <= maxPrice) {
             displayBnB(lis, i);
             found = 1;
         }
     }
+    
     if (!found) {
         printf("No properties found in that price range.\n");
     }
@@ -595,7 +611,36 @@ void initializeDefaultListings(BNB lis[]) {
     };
 }
 
-float calculatePrice(BNB lis[]){
-
+// Fixed: Implemented the calculatePrice function
+float calculatePrice(BNB *listing) {
+    float total = 0.0;
+    
+    // Add up all the description prices
+    for (int i = 0; i < 10 && listing->propertyDescriptions[i] != DESC_NONE; i++) {
+        total += desc_prices[listing->propertyDescriptions[i]];
+    }
+    
+    // Add bonuses for amenities
+    if (listing->amenities.isHotShower) total += 10.0;
+    if (listing->amenities.isAC) total += 15.0;
+    if (listing->amenities.isFreeParking) total += 10.0;
+    if (listing->amenities.isGuestSuppliesAvail) total += 5.0;
+    if (listing->amenities.isFreeWifi) total += 5.0;
+    if (listing->amenities.isAnimalFriendly) total += 5.0;
+    if (listing->amenities.isKitchenWareAvail) total += 8.0;
+    if (listing->amenities.isWashingMachineAvail) total += 10.0;
+    
+    // If service is free, consider adding a discount
+    if (listing->amenities.isServiceFree) {
+        total *= 0.95; // 5% discount for free service
+    }
+    
+    return total;
 }
 
+// Update prices for all listings
+void updateAllPrices(BNB lis[]) {
+    for (int i = 0; i < numListings; i++) {
+        lis[i].price = calculatePrice(&lis[i]);
+    }
+}
