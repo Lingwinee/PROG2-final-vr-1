@@ -1,6 +1,20 @@
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <conio.h>
+#include <windows.h>
+#include <stdarg.h>
+
+// Color definitions for Windows console
+#define COLOR_RED FOREGROUND_RED | FOREGROUND_INTENSITY
+#define COLOR_GREEN FOREGROUND_GREEN | FOREGROUND_INTENSITY
+#define COLOR_BLUE FOREGROUND_BLUE | FOREGROUND_INTENSITY
+#define COLOR_CYAN FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY
+#define COLOR_MAGENTA FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
+#define COLOR_YELLOW FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY
+#define COLOR_WHITE FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 
 #define FALSE 0
 #define TRUE 1
@@ -26,26 +40,25 @@ typedef struct {
     char propertyName[MAX_PROPERTY_NAME];
 
     struct {
-        char city[MAX_ADDRESS];
-        char street[MAX_ADDRESS];
-        char barangay[MAX_ADDRESS];
+        char city[MAX_ADDRESS],
+        street[MAX_ADDRESS],
+        barangay[MAX_ADDRESS];
         int zipCode;
     } address;
     
     DescriptionType propertyDescriptions[10];
 
     struct {
-        int isHotShower, isAC, isFreeParking, isGuestSuppliesAvail;
-        int isFreeWifi, isAnimalFriendly, isServiceFree, isKitchenWareAvail;
-        int isWashingMachineAvail;
+        int isHotShower, isAC, isFreeParking, isGuestSuppliesAvail,
+        isFreeWifi, isAnimalFriendly, isServiceFree, isKitchenWareAvail,
+        isWashingMachineAvail, isAvailElevator;
     } amenities;
     
     struct {
-        int hour;
-        int minute;
+        int hour, minute;
     } checkInTime;
 
-    char contactNumber[MAX_CONTACT_NO]; // format +63 933 321 0265
+    char contactNumber[MAX_CONTACT_NO];
     char propertyOwner[MAX_PROPERTY_NAME];
 
     float price, serviceFee;
@@ -61,10 +74,9 @@ const char* descriptions[DESC_MAX_TYPES] = {
 };
 
 const float desc_prices[DESC_MAX_TYPES] = {
-    0, 20, 50, 80, 65, 20, 35, 50, 65, 20, 15, 35, 25, 20, 45, 30, 25, 15, 20, 100, 150, 200, 120
+    0, 20, 50, 80, 65, 20, 35, 50, 65, 20, 15, 35, 25, 20, 45, 30, 25, 15, 20, 100, 150, 200, 100
 };
 
-// Global variable to track number of listings
 int numListings = 0;
 
 // Function prototypes
@@ -80,7 +92,11 @@ void findPrice(BNB lis[]);
 float calculatePrice(BNB *listing);
 void updateAllPrices(BNB lis[]);
 void initializeDefaultListings(BNB lis[]);
+void printColoredCentered(int color, const char* format, ...);
+void printColored(int color, const char* format, ...);
+int getConsoleWidth();
 
+//---------------------------------------------------------------Start of Main------------------------------------------------------------------
 int main() {
     BNB listing[MAX_LISTINGS];
     int choice;
@@ -90,8 +106,9 @@ int main() {
     updateAllPrices(listing);
 
     do {
+        system("cls");
         displayMenu();
-        printf("Input choice: ");
+        printColoredCentered(COLOR_CYAN, "Input choice: ");
         scanf("%d", &choice);
         fflush(stdin);
 
@@ -101,50 +118,109 @@ int main() {
             case 3: findProperty(listing); break;
             case 4: findIndex(listing); break;
             case 5: findPrice(listing); break;
-            case 6: printf("Exiting Menu\n"); break;
-            default: printf("Invalid choice\n");
+            case 6: printColoredCentered(COLOR_CYAN,"Exiting Menu\n"); break;
+            default: printColoredCentered(COLOR_RED,"Invalid choice\n");
         }
     } while (choice != 6);
 
     return 0;
 }
+//---------------------------------------------------------------end of main------------------------------------------------------------------
+
+// Function to get console width
+int getConsoleWidth() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+}
+
+void printColored(int color, const char* format, ...) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    WORD originalAttrs = csbi.wAttributes;
+    
+    // Set color
+    SetConsoleTextAttribute(hConsole, color);
+
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    
+    // Restore original color
+    SetConsoleTextAttribute(hConsole, originalAttrs);
+}
+void printColoredCentered(int color, const char* format, ...) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    WORD originalAttrs = csbi.wAttributes;
+    
+    // Format string
+    va_list args;
+    va_start(args, format);
+    char buffer[1024];
+    vsprintf(buffer, format, args);
+    va_end(args);
+    
+    int len = strlen(buffer);
+    int padding = (columns - len) / 2;
+    
+    // Set color
+    SetConsoleTextAttribute(hConsole, color);
+
+    // Print padding and text
+    if (padding > 0) {
+        printf("%*s%s", padding, "", buffer);
+    } else {
+        printf("%s", buffer);
+    }
+    
+    // Restore original color
+    SetConsoleTextAttribute(hConsole, originalAttrs);
+}
 
 void displayMenu() {
-    printf("-----AirBnB-----\n");
-    printf(" 1. Input Listing\n");
-    printf(" 2. Show Listing\n");
-    printf(" 3. Search property\n");
-    printf(" 4. Search Index\n");
-    printf(" 5. Search Price\n");
-    printf(" 6. Exit\n");
+    printColoredCentered(COLOR_BLUE, "AirBnB Listing Management\n");
+    printColoredCentered(COLOR_CYAN, "==============================\n");
+    printColoredCentered(COLOR_WHITE, " 1. Input Listing\n");
+    printColoredCentered(COLOR_WHITE, " 2. Show Listing\n");
+    printColoredCentered(COLOR_WHITE, " 3. Search property\n");
+    printColoredCentered(COLOR_WHITE, " 4. Search Index\n");
+    printColoredCentered(COLOR_WHITE, " 5. Search Price\n");
+    printColoredCentered(COLOR_WHITE, " 6. Exit\n");
+    printColoredCentered(COLOR_CYAN, "==============================\n\n");
 }
 
 void addListing(BNB lis[]) {
     int index = numListings;
 
-    printf("Enter Property Name: ");
+    printColoredCentered(COLOR_CYAN, "-Enter Property Name: ");
     fgets(lis[index].propertyName, MAX_PROPERTY_NAME, stdin);
     lis[index].propertyName[strcspn(lis[index].propertyName, "\n")] = 0;
 
-    printf("Enter Address:\n");
-    printf("Enter City: ");
+    printColoredCentered(COLOR_CYAN, "-Property Address:\n");
+    printColoredCentered(COLOR_WHITE, "Enter city: ");
     fgets(lis[index].address.city, MAX_ADDRESS, stdin);
     lis[index].address.city[strcspn(lis[index].address.city, "\n")] = 0;
     
-    printf("Enter street: ");
+    printColoredCentered(COLOR_WHITE, "Enter street: ");
     fgets(lis[index].address.street, MAX_ADDRESS, stdin);
     lis[index].address.street[strcspn(lis[index].address.street, "\n")] = 0;
     
-    printf("Enter barangay: ");
+    printColoredCentered(COLOR_WHITE, "Enter barangay: ");
     fgets(lis[index].address.barangay, MAX_ADDRESS, stdin);
     lis[index].address.barangay[strcspn(lis[index].address.barangay, "\n")] = 0;
     fflush(stdin);
     
-    printf("Enter Zip Code: ");
+    printColoredCentered(COLOR_CYAN, "-Enter zip code: ");
     scanf("%d", &lis[index].address.zipCode);
     fflush(stdin);
 
-    printf("Enter Service Fee: ");
+    printColoredCentered(COLOR_CYAN, "-Enter Service fee: ");
     scanf("%f", &lis[index].serviceFee);
     fflush(stdin);
     
@@ -153,17 +229,22 @@ void addListing(BNB lis[]) {
     
     // Get amenities
     getAmenities(lis, index);
-    do{
-        printf("Enter Check-in Time (HH:MM e.g. 12:41): ");
+
+    do {
+        printColoredCentered(COLOR_CYAN, "-Enter Check-in Time (HH:MM e.g. 12:41): ");
         scanf("%d:%d", &lis[index].checkInTime.hour, &lis[index].checkInTime.minute);
         fflush(stdin);
-    }while((lis[index].checkInTime.hour > 24 || lis[index].checkInTime.hour < 0) || (lis[index].checkInTime.minute > 59 || lis[index].checkInTime.minute < 0));
+        if((lis[index].checkInTime.hour > 24 || lis[index].checkInTime.hour < 0) || 
+            (lis[index].checkInTime.minute > 59 || lis[index].checkInTime.minute < 0))
+            printColoredCentered(COLOR_RED, "Invalid time. Please enter a valid 24-hour format time.\n");
+    } while((lis[index].checkInTime.hour > 24 || lis[index].checkInTime.hour < 0) || 
+            (lis[index].checkInTime.minute > 59 || lis[index].checkInTime.minute < 0));
 
-    printf("Enter Contact Number (e.g. +63 933 321 0265): ");
+    printColoredCentered(COLOR_CYAN, "-Enter Contact Number (e.g. +63 933 321 0265): ");
     fgets(lis[index].contactNumber, MAX_CONTACT_NO, stdin);
     lis[index].contactNumber[strcspn(lis[index].contactNumber, "\n")] = 0;
 
-    printf("Enter Property Owner: ");
+    printColoredCentered(COLOR_CYAN, "-Enter Property Owner: ");
     fgets(lis[index].propertyOwner, MAX_PROPERTY_NAME, stdin);
     lis[index].propertyOwner[strcspn(lis[index].propertyOwner, "\n")] = 0;
     
@@ -171,38 +252,49 @@ void addListing(BNB lis[]) {
     lis[index].price = calculatePrice(&lis[index]);
     
     numListings++;
-    printf("Listing added successfully!\n");
+    printColoredCentered(COLOR_GREEN, "Listing added successfully! (Press any key to continue)\n");
+    getch();
 }
 
 void getDescription(BNB lis[], int index) { 
     int i = 0, choice;
     char enterMore = ' ';
 
-    printf("Available descriptions:\n");
-    for (int j = 1; j < DESC_MAX_TYPES; j++) {
-        printf("%d. %s (Price: %.2f)\n", j, descriptions[j], desc_prices[j]);
+    printColoredCentered(COLOR_CYAN, "Available descriptions:\n");
+    for (int j = 2; j < DESC_MAX_TYPES; j+=2) {
+        printColoredCentered(COLOR_MAGENTA, "%-2d. %-22s (Price: %.2f)\t\t%-2d. %-22s (Price: %.2f)\n", 
+                            j-1, descriptions[j-1], desc_prices[j-1], j, descriptions[j], desc_prices[j]);
     }
     
     do {
         if (i >= 10) {
-            printf("Maximum number of descriptions reached.\n");
+            printColoredCentered(COLOR_RED, "Maximum number of descriptions reached.\n");
             break;
         }
         
-        printf("Enter description choice (1-%d): ", DESC_MAX_TYPES - 1);
+        printColoredCentered(COLOR_CYAN, "Enter description choice (1-%d): ", DESC_MAX_TYPES - 1);
         scanf("%d", &choice);
         fflush(stdin);
         
         if (choice >= 1 && choice < DESC_MAX_TYPES) {
             lis[index].propertyDescriptions[i++] = (DescriptionType)choice;
-            printf("Added: %s\n", descriptions[choice]);
+            printColoredCentered(COLOR_GREEN, "Added: %s\n", descriptions[choice]);
         } else {
-            printf("Invalid choice.\n");
+            printColoredCentered(COLOR_RED, "Invalid choice. Please enter a number between 1 and %d.\n", DESC_MAX_TYPES - 1);
         }
         
         if (i < 10) {
-            printf("Enter more (Y/N)? ");
-            scanf(" %c", &enterMore);
+            do {
+                printColoredCentered(COLOR_CYAN, "Enter more (Y/N)? ");
+                scanf(" %c", &enterMore);
+                enterMore = toupper(enterMore);
+                
+                if (!(enterMore == 'Y' || enterMore == 'N')) {
+                    printColoredCentered(COLOR_RED, "Please enter Y or N only.\n");
+                }
+                
+            } while(!(enterMore == 'Y' || enterMore == 'N'));
+            
             fflush(stdin);
         }
     } while (i < 10 && toupper(enterMore) == 'Y');
@@ -215,134 +307,215 @@ void getDescription(BNB lis[], int index) {
 
 void getAmenities(BNB lis[], int index) {
     char response;
-    const char* amenityNames[] = {
-        "hot shower", "AC", "Free Parking", "Guest Supplies", "Free Wifi",
-        "Animal friendly", "service Free", "Kitchen ware available", "washing machine available"
-    };
-    int* amenityValues[] = {
-        &lis[index].amenities.isHotShower, &lis[index].amenities.isAC,
-        &lis[index].amenities.isFreeParking, &lis[index].amenities.isGuestSuppliesAvail,
-        &lis[index].amenities.isFreeWifi, &lis[index].amenities.isAnimalFriendly,
-        &lis[index].amenities.isServiceFree, &lis[index].amenities.isKitchenWareAvail,
-        &lis[index].amenities.isWashingMachineAvail
-    };
+        
+    printColoredCentered(COLOR_CYAN, "Does the property have hot shower (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isHotShower = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+
+    printColoredCentered(COLOR_CYAN, "Does the property have AC? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isAC = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+
+    printColoredCentered(COLOR_CYAN, "Does the property have Free Parking? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isFreeParking = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+
+    printColoredCentered(COLOR_CYAN, "Does the property have Guest Supplies? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isGuestSuppliesAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
     
-    for (int i = 0; i < MAX_AMENITIES; i++) {
-        printf("Does the property have %s (Y/N)? ", amenityNames[i]);
-        scanf(" %c", &response);
-        *amenityValues[i] = (toupper(response) == 'Y') ? TRUE : FALSE;
-    }
+    printColoredCentered(COLOR_CYAN, "Does the property have Free Wifi? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isFreeWifi = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+    
+    printColoredCentered(COLOR_CYAN, "Is the property Animal friendly? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isAnimalFriendly = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+    
+    printColoredCentered(COLOR_CYAN, "Is the service Free? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isServiceFree = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+    
+    printColoredCentered(COLOR_CYAN, "Is Kitchen ware available? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isKitchenWareAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
+    fflush(stdin);
+    
+    printColoredCentered(COLOR_CYAN, "Is washing machine available? (Y/N)? ");
+    scanf(" %c", &response);
+    lis[index].amenities.isWashingMachineAvail = (toupper(response) == 'Y') ? TRUE : FALSE;
     fflush(stdin);
 }
-
+            
 void displayBnB(BNB lis[], int index) {
-    printf("\n--- Property Listing %d ---\n", index + 1);
-    printf("Name: %s\n", lis[index].propertyName);
-    printf("Address: %s, %s, %s, %d\n", 
+    int indent = 20;
+    
+    printColoredCentered(COLOR_BLUE, "Property Details\n");
+    printColoredCentered(COLOR_YELLOW, "--- Property Listing %d ---\n\n", index + 1);
+    
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Name: ");
+    printColored(COLOR_WHITE, "%s\n", lis[index].propertyName);
+
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Address: ");
+    printColored(COLOR_WHITE, "%s, %s, %s, %d\n", 
         lis[index].address.street, 
         lis[index].address.barangay, 
         lis[index].address.city, 
         lis[index].address.zipCode);
     
-    printf("Descriptions: ");
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Descriptions: ");
+    
     for (int i = 0; i < 10 && lis[index].propertyDescriptions[i] != DESC_NONE; i++) {
-        printf("%s", descriptions[lis[index].propertyDescriptions[i]]);
+        printColored(COLOR_WHITE, "%s", descriptions[lis[index].propertyDescriptions[i]]);
         if (lis[index].propertyDescriptions[i+1] != DESC_NONE && i+1 < 10) {
-            printf(", ");
+            printColored(COLOR_WHITE, ", ");
         }
     }
     printf("\n");
     
-    printf("Amenities:\n");
-    if (lis[index].amenities.isHotShower) printf("- Hot Shower\n");
-    if (lis[index].amenities.isAC) printf("- Air Conditioning\n");
-    if (lis[index].amenities.isFreeParking) printf("- Free Parking\n");
-    if (lis[index].amenities.isGuestSuppliesAvail) printf("- Guest Supplies Available\n");
-    if (lis[index].amenities.isFreeWifi) printf("- Free WiFi\n");
-    if (lis[index].amenities.isAnimalFriendly) printf("- Animal Friendly\n");
-    if (lis[index].amenities.isServiceFree) printf("- Service Free\n");
-    if (lis[index].amenities.isKitchenWareAvail) printf("- Kitchenware Available\n");
-    if (lis[index].amenities.isWashingMachineAvail) printf("- Washing Machine Available\n");
+    printColored(COLOR_CYAN, "%*s%-15s\n", indent, "", "Amenities:");
     
-    printf("Price: %.2f\n", lis[index].price);
-    printf("Service Fee: %.2f\n", lis[index].serviceFee);
-    printf("Check-in Time: %02d:%02d\n", lis[index].checkInTime.hour, lis[index].checkInTime.minute);
-    printf("Contact Number: %s\n", lis[index].contactNumber);	
-    printf("Owner: %s\n", lis[index].propertyOwner);
+    if (lis[index].amenities.isHotShower) 
+        printColored(COLOR_WHITE, "%*s- Hot Shower\n", indent + 2, "");
+    if (lis[index].amenities.isAC) 
+        printColored(COLOR_WHITE, "%*s- Air Conditioning\n", indent + 2, "");
+    if (lis[index].amenities.isFreeParking) 
+        printColored(COLOR_WHITE, "%*s- Free Parking\n", indent + 2, "");
+    if (lis[index].amenities.isGuestSuppliesAvail) 
+        printColored(COLOR_WHITE, "%*s- Guest Supplies Available\n", indent + 2, "");
+    if (lis[index].amenities.isFreeWifi) 
+        printColored(COLOR_WHITE, "%*s- Free WiFi\n", indent + 2, "");
+    if (lis[index].amenities.isAnimalFriendly) 
+        printColored(COLOR_WHITE, "%*s- Animal Friendly\n", indent + 2, "");
+    if (lis[index].amenities.isServiceFree) 
+        printColored(COLOR_WHITE, "%*s- Service Free\n", indent + 2, "");
+    if (lis[index].amenities.isKitchenWareAvail) 
+        printColored(COLOR_WHITE, "%*s- Kitchenware Available\n", indent + 2, "");
+    if (lis[index].amenities.isWashingMachineAvail) 
+        printColored(COLOR_WHITE, "%*s- Washing Machine Available\n", indent + 2, "");
+    
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Price: ");
+    printColored(COLOR_GREEN, "$%.2f\n", lis[index].price);
+    
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Service Fee: ");
+    printColored(COLOR_GREEN, "$%.2f\n", lis[index].serviceFee);
+    
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Check-in Time: ");
+    printColored(COLOR_WHITE, "%02d:%02d\n", lis[index].checkInTime.hour, lis[index].checkInTime.minute);
+    
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Contact: ");
+    printColored(COLOR_WHITE, "%s\n", lis[index].contactNumber);
+    
+    printColored(COLOR_CYAN, "%*s%-15s", indent, "", "Owner: ");
+    printColored(COLOR_WHITE, "%s\n", lis[index].propertyOwner);
 }
 
 void displayAll(BNB lis[]) {
+    int consoleWidth = getConsoleWidth();
+    int tableWidth = 90;
+    int padding = (consoleWidth - tableWidth) / 2;
+    
+    printColoredCentered(COLOR_BLUE, "All Property Listings\n");
+    
     if (numListings == 0) {
-        printf("No listings available.\n");
+        printColoredCentered(COLOR_RED, "No listings available.\n");
+        printColoredCentered(COLOR_YELLOW, "(Press any key to continue)\n");
+        getch();
         return;
     }
+
+    printColored(COLOR_CYAN, "%*s%-3s %-30s %-30s %-15s\n", 
+        padding, "", "ID", "Property Name", "Location", "Owner");
     
-    // Print table header
-    printf("\n%-3s %-30s %-30s %-15s %-10s %-10s %-10s\n", 
-        "ID", "Property Name", "Location", "Price", "Service Fee", "Check-in", "Owner");
-    printf("%-3s %-30s %-30s %-15s %-10s %-10s %-10s\n",
-        "---", "------------------------------", "------------------------------", 
-        "---------------", "----------", "----------", "----------");
+    printColored(COLOR_BLUE, "%*s%s\n", 
+        padding, "", "--------------------------------------------------------------------------------");
     
-    // Print each listing as a row
     for (int i = 0; i < numListings; i++) {
-        char location[50];
+        char location[100];
         sprintf(location, "%s, %s", lis[i].address.barangay, lis[i].address.city);
         
-        char checkInTime[10];
-        sprintf(checkInTime, "%02d:%02d", lis[i].checkInTime.hour, lis[i].checkInTime.minute);
-        
-        printf("%-3d %-30.30s %-30.30s %-2s%-13.2f %-2s%-8.2f %-10s %-10.25s\n", 
-            i+1, lis[i].propertyName, location, "P", lis[i].price, 
-            "P", lis[i].serviceFee, checkInTime, lis[i].propertyOwner);
+        printColored(COLOR_WHITE, "%*s%-3d %-30.30s %-30.30s %-15.15s\n", 
+            padding, "", i+1, lis[i].propertyName, location, lis[i].propertyOwner);
     }
     
-    printf("\nDisplaying %d listing(s)\n", numListings);
-    printf("For detailed information, use \"3. Search Property or 4. Search Index\".\n\n");
+    printColoredCentered(COLOR_GREEN, "Displaying %d listing(s)\n", numListings);
+    printColoredCentered(COLOR_YELLOW, "For detailed information, use \"3. Search Property\" or \"4. Search Index\".\n");
+    printColoredCentered(COLOR_YELLOW, "(Press any key to continue)\n");
+    getch();
 }
 
 void findProperty(BNB lis[]) {
     char searchName[MAX_PROPERTY_NAME];
+    char propertyNameLower[MAX_PROPERTY_NAME];
+    char searchNameLower[MAX_PROPERTY_NAME];
     int found = 0;
     
-    printf("Enter property name to search: ");
+    printColoredCentered(COLOR_CYAN, "Enter property name to search: ");
     fgets(searchName, MAX_PROPERTY_NAME, stdin);
     searchName[strcspn(searchName, "\n")] = 0;
     
+    strcpy(searchNameLower, searchName);
+    for (int j = 0; searchNameLower[j]; j++) {
+        searchNameLower[j] = tolower(searchNameLower[j]);
+    }
+    
     for (int i = 0; i < numListings; i++) {
-        if (strstr(lis[i].propertyName, searchName) != NULL) {
+        strcpy(propertyNameLower, lis[i].propertyName);
+        for (int j = 0; propertyNameLower[j]; j++) {
+            propertyNameLower[j] = tolower(propertyNameLower[j]);
+        }
+        
+        if (strstr(propertyNameLower, searchNameLower) != NULL) {
             displayBnB(lis, i);
             found = 1;
         }
     }
     
     if (!found) {
-        printf("No properties found matching '%s'.\n", searchName);
+        printColoredCentered(COLOR_RED, "No properties found matching '%s'.\n", searchName);
     }
+    printColoredCentered(COLOR_YELLOW, "(Press any key to continue)\n");
+    
+    getch();
 }
+
 void findIndex(BNB lis[]) {
     int index;
-    printf("Enter the Index of property: ");
+    
+    printColoredCentered(COLOR_CYAN, "Enter the Index of property: ");
     scanf("%d", &index);
     
     if (index < 1 || index > numListings) {
-        printf("Invalid index. Please enter a number between 1 and %d.\n", numListings);
+        printColoredCentered(COLOR_RED, "Invalid index. Please enter a number between 1 and %d.\n", numListings);
+        printColoredCentered(COLOR_YELLOW, "(Press any key to continue)\n");
+        getch();
         return;
     }
     
     displayBnB(lis, index - 1);
+    printColoredCentered(COLOR_YELLOW, "(Press any key to continue)\n");
+    getch();
 }
 
 void findPrice(BNB lis[]) {
     int found = 0;
     float minPrice, maxPrice;
     
-    printf("Enter price Range to find:\nMinimum Price: ");
+    printColoredCentered(COLOR_CYAN, "Enter price Range to find:\n");
+    printColoredCentered(COLOR_CYAN, "Minimum Price: ");
     scanf("%f", &minPrice);
-    printf("Maximum Price: ");
+    printColoredCentered(COLOR_CYAN, "Maximum Price: ");
     scanf("%f", &maxPrice);
     
-    printf("\nProperties within price range %.2f - %.2f:\n", minPrice, maxPrice);
+    printColoredCentered(COLOR_GREEN, "Properties within price range $%.2f - $%.2f:\n", minPrice, maxPrice);
+    
     for (int i = 0; i < numListings; i++) {
         if (lis[i].price >= minPrice && lis[i].price <= maxPrice) {
             displayBnB(lis, i);
@@ -350,16 +523,22 @@ void findPrice(BNB lis[]) {
         }
     }
     
-    if (!found) printf("No properties found in that price range.\n");
+    if (!found){
+        printColoredCentered(COLOR_RED, "No properties found in that price range.\n");
+    }
+    printColoredCentered(COLOR_YELLOW, "(Press any key to continue)\n");
+    getch();
 }
 
 float calculatePrice(BNB *listing) {
     float total = 0.0;
     
-    for (int i = 0; i < MAX_DESC && listing->propertyDescriptions[i] != DESC_NONE; i++) {
+    // Add prices for all descriptions
+    for (int i = 0; i < 10 && listing->propertyDescriptions[i] != DESC_NONE; i++) {
         total += desc_prices[listing->propertyDescriptions[i]];
     }
     
+    // Add prices for amenities
     if (listing->amenities.isHotShower) total += 10.0;
     if (listing->amenities.isAC) total += 15.0;
     if (listing->amenities.isFreeParking) total += 10.0;
@@ -369,7 +548,8 @@ float calculatePrice(BNB *listing) {
     if (listing->amenities.isKitchenWareAvail) total += 8.0;
     if (listing->amenities.isWashingMachineAvail) total += 10.0;
     
-    if (listing->amenities.isServiceFree) total *= 0.95;
+    // Apply discount if service is free
+    if (listing->amenities.isServiceFree) total *= 0.70; // 30% discount
     
     return total;
 }
@@ -379,7 +559,6 @@ void updateAllPrices(BNB lis[]) {
         lis[i].price = calculatePrice(&lis[i]);
     }
 }
-
 void initializeDefaultListings(BNB lis[]) {
     // Listing 1: Beachfront Villa
     lis[0] = (BNB){
@@ -398,7 +577,7 @@ void initializeDefaultListings(BNB lis[]) {
     // Listing 3: Mountain Retreat
     lis[2] = (BNB){
         "Serene Mountain Cottage", {"Baguio", "Pine Tree Road", "Camp John Hay", 2600},
-        {DOUBLE_BED, SINGLE_BED, WITH_KITCHEN, WITH_MOUNTAIN_VIEW, WITH_FIREPLACE, ENTIRE_COTTAGE, DESC_NONE},
+        {DOUBLE_BED, SINGLE_BED, WITH_KITCHEN, WITH_MOUNTAIN_VIEW, WITH_FIREPLACE, DESC_NONE},
         {TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE}, {13, 0}, "+63 915 987 6543",
         "Elena Reyes", 0, 25.00
     };
@@ -417,3 +596,5 @@ void initializeDefaultListings(BNB lis[]) {
         "+63 945 777 9999", "Rodrigo Torres", 0,  40.00
     };
 }
+
+
