@@ -383,141 +383,37 @@ void updateAllPrices(BNB lis[]) {
 void initializeDefaultListings(BNB lis[]) {
     // Listing 1: Beachfront Villa
     lis[0] = (BNB){
-        "Beachfront Villa Paradise",
-        {
-            "Cebu City",
-            "Oceanview Drive",
-            "Mactan",
-            6015
-        },
+        "Beachfront Villa Paradise", {"Cebu City", "Oceanview Drive", "Mactan", 6015},
         {KING_BED, QUEEN_BED, WITH_KITCHEN, WITH_POOL, WITH_OCEAN_VIEW, ENTIRE_VILLA, DESC_NONE},
-        {
-            TRUE,
-            TRUE,
-            TRUE,
-            TRUE,
-            TRUE,
-            FALSE,
-            FALSE,
-            TRUE,
-            TRUE
-        },
-        {14, 0},
-        "+63 933 123 4567",
-        "Maria Santos",
-        0,
-        50.00
+        {TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE}, {14, 0},
+        "+63 933 123 4567", "Maria Santos", 0, 50.00
     };
-
     // Listing 2: City Apartment
     lis[1] = (BNB){
-        "Modern Downtown Apartment",
-        {
-            "Manila",
-            "Bonifacio Avenue",
-            "Poblacion",
-            1200
-        },
+        "Modern Downtown Apartment", {"Manila", "Bonifacio Avenue", "Poblacion", 1200},
         {QUEEN_BED, WITH_KITCHEN, WITH_BALCONY, WITH_WORKSPACE, ENTIRE_APARTMENT, DESC_NONE},
-        {
-            TRUE,
-            TRUE,
-            FALSE,
-            TRUE,
-            TRUE,
-            FALSE,
-            FALSE,
-            TRUE,
-            TRUE
-        },
-        {15, 30},
-        "+63 917 555 8888",
-        "Juan Dela Cruz",
-        0,
-        20.00
+        {TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE}, {15, 30},
+        "+63 917 555 8888", "Juan Dela Cruz", 0, 20.00
     };
-
     // Listing 3: Mountain Retreat
     lis[2] = (BNB){
-        "Serene Mountain Cottage",
-        {
-            "Baguio",
-            "Pine Tree Road",
-            "Camp John Hay",
-            2600
-        },
+        "Serene Mountain Cottage", {"Baguio", "Pine Tree Road", "Camp John Hay", 2600},
         {DOUBLE_BED, SINGLE_BED, WITH_KITCHEN, WITH_MOUNTAIN_VIEW, WITH_FIREPLACE, ENTIRE_COTTAGE, DESC_NONE},
-        {
-            TRUE,
-            FALSE,
-            TRUE,
-            TRUE,
-            TRUE,
-            TRUE,
-            FALSE,
-            TRUE,
-            FALSE
-        },
-        {13, 0},
-        "+63 915 987 6543",
-        "Elena Reyes",
-        0,
-        25.00
+        {TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE}, {13, 0}, "+63 915 987 6543",
+        "Elena Reyes", 0, 25.00
     };
-
     // Listing 4: Budget Room
     lis[3] = (BNB){
-        "Cozy Budget Room",
-        {
-            "Quezon City",
-            "University Avenue",
-            "Diliman",
-            1101
-        },
+        "Cozy Budget Room", {"Quezon City", "University Avenue", "Diliman", 1101},
         {SINGLE_BED, SINGLE_ROOM, WITH_PRIVATE_BATHROOM, DESC_NONE},
-        {
-            TRUE,
-            TRUE,
-            FALSE,
-            TRUE,
-            TRUE,
-            FALSE,
-            TRUE,
-            FALSE,
-            FALSE
-        },
-        {14, 0},
-        "+63 922 111 2222",
-        "Paolo Mendoza",
-        0,
-        5.00
+        {TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE}, {14, 0},
+        "+63 922 111 2222", "Paolo Mendoza", 0, 5.00
     };
-
     // Listing 5: Luxury House
     lis[4] = (BNB){
-        "Luxury Family House",
-        {
-            "Davao",
-            "Palm Avenue",
-            "Lanang",
-            8000
-        },
+        "Luxury Family House", {"Davao", "Palm Avenue", "Lanang", 8000},
         {KING_BED, DOUBLE_BED, WITH_GARDEN, WITH_POOL, WITH_KITCHEN, ENTIRE_HOUSE, DESC_NONE},
-        {
-            TRUE,
-            TRUE,
-            TRUE,
-            TRUE,
-            TRUE,
-            TRUE,
-            FALSE,
-            TRUE,
-            TRUE
-        },
-        {12, 0},
-        "+63 945 777 9999",
-        "Rodrigo Torres",
-        0,
-        40.00
+        {TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE}, {12, 0},
+        "+63 945 777 9999", "Rodrigo Torres", 0,  40.00
     };
 }
