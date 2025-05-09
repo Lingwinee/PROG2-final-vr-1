@@ -64,7 +64,6 @@ const float desc_prices[DESC_MAX_TYPES] = {
     0, 20, 50, 80, 65, 20, 35, 50, 65, 20, 15, 35, 25, 20, 45, 30, 25, 15, 20, 100, 150, 200, 120
 };
 
-
 // Global variable to track number of listings
 int numListings = 0;
 
