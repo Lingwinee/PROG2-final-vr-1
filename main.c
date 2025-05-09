@@ -153,10 +153,11 @@ void addListing(BNB lis[]) {
     
     // Get amenities
     getAmenities(lis, index);
-    
-    printf("Enter Check-in Time (HH:MM e.g. 12:41): ");
-    scanf("%d:%d", &lis[index].checkInTime.hour, &lis[index].checkInTime.minute);
-    fflush(stdin);
+    do{
+        printf("Enter Check-in Time (HH:MM e.g. 12:41): ");
+        scanf("%d:%d", &lis[index].checkInTime.hour, &lis[index].checkInTime.minute);
+        fflush(stdin);
+    }while((lis[index].checkInTime.hour > 24 || lis[index].checkInTime.hour < 0) || (lis[index].checkInTime.minute > 59 || lis[index].checkInTime.minute < 0));
 
     printf("Enter Contact Number (e.g. +63 933 321 0265): ");
     fgets(lis[index].contactNumber, MAX_CONTACT_NO, stdin);
